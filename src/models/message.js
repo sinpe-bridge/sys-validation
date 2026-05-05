@@ -24,6 +24,10 @@ const Message = sequelize.define('Message', {
         type: DataTypes.STRING(50),
         allowNull: false,
     },
+    message_status: { //'pending', 'processed', 'failed'
+        type: DataTypes.STRING(20), 
+        allowNull: false,
+    },
     message_date_time: {
         type: DataTypes.DATE,
         allowNull: false,
