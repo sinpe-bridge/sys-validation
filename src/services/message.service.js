@@ -51,7 +51,21 @@ const s_verify_exists_reference_code = async (reference_code) => {
     return !!existingMessage;
 };
 
+// service to verify the time that the message was sent, if it's more than 15 minutes, it will be marked as failed
+const s_verify_message_time = async (message) => {
+    const currentTime = new Date();
+    const messageTime = new Date(message.message_date_time);
+    const timeDifference = (currentTime - messageTime) / 1000;
+    if (timeDifference > 900) { // 15 minutes
+        message.message_status = 'failed';
+        await message.save();
+    }
+    return message;
+};
+
 module.exports = {
     s_save_message,
-    s_get_structured_message
+    s_get_structured_message,
+    s_verify_exists_reference_code,
+    s_verify_message_time
 };
