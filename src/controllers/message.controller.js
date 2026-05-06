@@ -1,8 +1,10 @@
-const { s_save_message } = require('../services/message_service');
+const { s_save_message, s_get_structured_message } = require('../services/message_service');
 
 const c_message_validate = async (req, res) => {
     try {
-        const { message_sender } = req.body;
+        const { message } = req.body;
+
+        const message_sender = s_get_structured_message(message);
 
         const result = await s_save_message({ message_sender });
 
