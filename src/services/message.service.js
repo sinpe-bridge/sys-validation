@@ -34,7 +34,7 @@ const s_get_structured_message = async (message) => {
         const minute = reference.substring(10, 12);
         const second = reference.substring(12, 14);
         date = `${year}-${month}-${day} ${hour}:${minute}:${second}`;
-    }
+    };
     
     return new Message({
         message_amount: amount,
@@ -43,6 +43,12 @@ const s_get_structured_message = async (message) => {
         message_status: 'pending',
         message_date_time: date
     });
+};
+
+// service to verify if a message with the same reference code already exists
+const s_verify_exists_reference_code = async (reference_code) => {
+    const existingMessage = await message_repository.r_get_message(reference_code);
+    return !!existingMessage;
 };
 
 module.exports = {
