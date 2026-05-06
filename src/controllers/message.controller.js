@@ -6,7 +6,15 @@ const c_message_validate = async (req, res) => {
 
         const message_sender = s_get_structured_message(message);
 
-        const result = await s_save_message({ message_sender });
+        const result = await s_save_message(message_sender);
+
+        const verifyExists = await s_verify_exists_reference_code(message_sender.message_reference_code);
+        
+        if (verifyExists) {
+            return res.status(400).json({
+                error: "Reference code already exists"
+            });
+        }
 
         return res.status(201).json({
             message: "Successfully saved message",
