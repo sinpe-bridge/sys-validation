@@ -1,10 +1,10 @@
-const { s_save_message, s_get_structured_message, s_verify_message_time } = require('../services/message_service');
+const { s_save_message, s_get_structured_message, s_verify_message_time } = require('../services/message.service');
 
 const c_message_validate = async (req, res) => {
     try {
-        const { message } = req.body;
+        const { data_phone_number, data_phone_message } = req.body;
 
-        const message_sender = s_get_structured_message(message);
+        const message_sender = s_get_structured_message(data_phone_message);
 
         const result = await s_save_message(message_sender);
 
