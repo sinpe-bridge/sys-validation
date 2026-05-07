@@ -1,23 +1,21 @@
-const Message = require('../models/message.model');
+const Payment = require('../models/payment.model');
 
-// repository to save message data to the database
-const r_save_message = async (message_data) => {
-    return await Message.create({
-        message_sender: message_data.message_sender
-    });
+// repository to save payment data to the database
+const r_save_payment = async (payment_data) => {
+    return await Payment.create(payment_data);
 };
 
-// repository to get message by reference code
-const r_get_message = async (reference_code) => {
-    const verifyExists = await Message.findOne({
+// repository to get payment by reference code
+const r_get_payment = async (reference_code) => {
+    const verifyExists = await Payment.findOne({
         where: {
-            message_reference_code: reference_code
+            payment_reference_code: reference_code
         }
     });
     return verifyExists;
 };
 
 module.exports = {
-    r_save_message,
-    r_get_message
+    r_save_payment,
+    r_get_payment,
 };

@@ -1,12 +1,20 @@
 const message_repository = require('../repositories/message.repository');
-const Message = require('../models/message');
+const Payment = require('../models/payment.model');
 
 // service to save message data to the database
 const s_save_message = async (message_data) => {
     if (!message_data.message_sender) {
         throw new Error("message_sender is required");
     }
-    return await message_repository.r_save_message(message_data);
+
+    const paymentData = new Payment({
+        payment_user_name: message_data.message_sender,
+        payment_amount: message_data.payment_amount,
+        payment_reference_code: message_data.payment_reference_code,
+        payment_date_time: message_data.payment_date_time, 
+    });
+    
+    return await message_repository.r_save_payment(paymentData);
 };
 
 // service to extract structured data from the message text
@@ -36,28 +44,27 @@ const s_get_structured_message = async (message) => {
         date = `${year}-${month}-${day} ${hour}:${minute}:${second}`;
     };
     
-    return new Message({
-        message_amount: amount,
-        message_user_name: name,
-        message_reference_code: reference,
-        message_status: 'pending',
-        message_date_time: date
+    return new Payment({
+        payment_amount: amount,
+        payment_user_name: name,
+        payment_reference_code: reference,
+        payment_status: 'pending',
+        payment_date_time: date
     });
 };
 
 // service to verify if a message with the same reference code already exists
 const s_verify_exists_reference_code = async (reference_code) => {
-    const existingMessage = await message_repository.r_get_message(reference_code);
-    return !!existingMessage;
+    const existingPayment = await message_repository.r_get_payment(reference_code);
+    return !!existingPayment;
 };
 
 // service to verify the time that the message was sent, if it's more than 15 minutes, it will be marked as failed
 const s_verify_message_time = async (message) => {
     const currentTime = new Date();
-    const messageTime = new Date(message.message_date_time);
+    const messageTime = new Date(message.payment_date_time);
     const timeDifference = (currentTime - messageTime) / 1000;
     if (timeDifference > 900) { // 15 minutes
-        message.message_status = 'failed';
         await message.save();
     }
     return message;

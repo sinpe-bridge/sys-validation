@@ -1,41 +1,43 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const Message = sequelize.define('Message', {
-    message_id: {
+const Payment = sequelize.define('Payment', {
+    payment_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
     },
-    message_amount: {
+    order_id: {
         type: DataTypes.INTEGER,
+        allowNull: true,
+        unique: true,
+    },
+    payment_amount: {
+        type: DataTypes.DECIMAL(10,2),
         allowNull: false,
     }, 
-    message_user_name: {
+    payment_user_name: {
         type: DataTypes.STRING(100),
         allowNull: false,
     },
-    message_reference_code: {
+    payment_reference_code: {
         type: DataTypes.STRING(50),
         allowNull: false,
+        unique: true,
     },
-    message_status: { //'pending', 'processed', 'failed'
-        type: DataTypes.STRING(20), 
-        allowNull: false,
-    },
-    message_date_time: {
+    payment_date_time: {
         type: DataTypes.DATE,
         allowNull: false,
     }, 
-    message_create_at: {
+    payment_create_at: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
     }
 }, {
-    tableName: 'messages',
+    tableName: 'payments',
     timestamps: false,
 }); 
 
-module.exports = Message;
+module.exports = Payment;
