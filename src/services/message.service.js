@@ -19,7 +19,7 @@ const s_save_message = async (message_data) => {
 
 // service to extract structured data from the message text
 const s_get_structured_message = async (message) => {
-    
+    const text = message.message_text;
     // extract amount
     const amountMatch = text.match(/recibido\s([\d,]+\.\d{2})/i);
     const amount = amountMatch ? amountMatch[1] : null;
@@ -66,6 +66,8 @@ const s_verify_message_time = async (message) => {
     const timeDifference = (currentTime - messageTime) / 1000;
     if (timeDifference > 900) { // 15 minutes
         await message.save();
+
+        // method to update order status to expired
     }
     return message;
 };

@@ -1,4 +1,5 @@
-const { s_save_message, s_get_structured_message, s_verify_message_time } = require('../services/message.service');
+const { s_save_message, s_get_structured_message, s_verify_message_time, s_verify_exists_reference_code } = require('../services/message.service');
+const { s_verify_order_exists } = require('../services/order.service');
 
 const c_message_validate = async (req, res) => {
     try {
@@ -17,17 +18,16 @@ const c_message_validate = async (req, res) => {
         }
 
         const verifyTime = await s_verify_message_time(message_sender);
-
-        if (verifyTime.message_status === 'failed') {
+        if (!verifyTime) {
             return res.status(400).json({
-                error: "Message time is more than 15 minutes, marked as failed"
+                error: "Order has expired, approve manually"
             });
         }
 
-        return res.status(201).json({
-            message: "Successfully saved message",
-            data: result
-        });
+        const verifyOrder = await s_verify_order_exists(data_phone_number, message_sender.message_amount);
+
+        if (verifyOrder) {
+        }
 
     } catch (error) {
         return res.status(400).json({
