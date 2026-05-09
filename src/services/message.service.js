@@ -66,8 +66,6 @@ const s_verify_message_time = async (message) => {
     const timeDifference = (currentTime - messageTime) / 1000;
     if (timeDifference > 900) { // 15 minutes
         await message.save();
-
-        // method to update order status to expired
     }
     return message;
 };
